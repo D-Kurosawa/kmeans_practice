@@ -66,3 +66,21 @@ STEP4
 """
 wt_kmeansclus = kmeans.fit(X, sample_weight=Y)
 predicted_kmeans = kmeans.predict(X, sample_weight=Y)
+
+"""
+STEP5
+    散布図でクラスターと重心を視覚化する
+"""
+plt.style.use('default')
+plt.figure(figsize=(15, 10))
+plt.scatter(X[:, 0], X[:, 1], c=wt_kmeansclus.labels_.astype(float), s=10,
+            cmap='tab20b', marker='x')
+plt.title('Customer Spend Local vs Organic - Weighted K-Means', fontsize=18,
+          fontweight='bold')
+plt.xlabel('Pct_Spend_in_Local', fontsize=15)
+plt.ylabel('Pct_Spend_in_Organic', fontsize=15)
+
+centers = wt_kmeansclus.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='black', s=500, alpha=0.5)
+
+plt.show()
