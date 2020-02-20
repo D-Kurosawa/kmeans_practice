@@ -134,3 +134,19 @@ print()
 print(df_nw.head(10))
 print(df_nw.shape)
 print()
+
+"""
+比較
+    重み付けされていないクラスターの散布図の生成
+"""
+plt.figure(figsize=(15, 10))
+plt.scatter(X[:, 0], X[:, 1], c=predicted_kmeans_nw, s=10, cmap='tab20',
+            marker='x')
+plt.scatter(centers_nw[:, 0], centers_nw[:, 1], c='black', s=500, alpha=0.5)
+plt.title('Customer Spend - Local vs Organic - Unweighted K-Means',
+          fontsize=18, fontweight='bold')
+
+plt.xlabel('Spend_in_Local', fontsize=15)
+plt.ylabel('Spend_in_Organic', fontsize=15)
+
+plt.show()
