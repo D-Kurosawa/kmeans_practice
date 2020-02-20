@@ -1,0 +1,49 @@
+{
+  "set": {
+    "cpu": "mid"
+  },
+  "load": {
+    "foo": {
+      "foo_A": {
+        "path": "./conf",
+        "file": "config.json"
+      },
+      "foo_B": {
+        "path": "./docs",
+        "pattern": "*.md"
+      }
+    },
+    "bar": {
+      "bar_A": {
+        "path": "./prac_kmeans",
+        "file": "conf.py"
+      },
+      "bar_B": {
+        "path": "./prac_kmeans/mypkg",
+        "pattern": "*.py"
+      }
+    }
+  },
+  "save": {
+    "foo": {
+      "foo_A": {
+        "path": "./conf",
+        "file": "foo_A.json"
+      },
+      "foo_B": {
+        "path": "./conf",
+        "base_name": "foo_B_{BASE_NAME}.json"
+      }
+    },
+    "bar": {
+      "bar_A": {
+        "path": "./docs",
+        "file": "bar_A.txt"
+      },
+      "bar_B": {
+        "path": "./docs",
+        "base_name": "bar_B_{BASE_NAME}.txt"
+      }
+    }
+  }
+}
