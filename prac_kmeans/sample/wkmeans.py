@@ -57,3 +57,12 @@ Y = np.array(df['Total_Spend'].astype(float))
 
 print(X)
 print(Y)
+
+"""
+STEP4
+    加重k-meansクラスタリングを実行し、入力として「X」配列を、サンプルの重みとして
+    「Y」配列を入力します
+    すべてのデータポイントのクラスターレベルを生成する
+"""
+wt_kmeansclus = kmeans.fit(X, sample_weight=Y)
+predicted_kmeans = kmeans.predict(X, sample_weight=Y)
