@@ -102,11 +102,35 @@ STEP6
 df['ClusterID_wt'] = predicted_kmeans
 centersdf = pd.DataFrame(centers)
 centersdf['ClusterID_wt'] = centersdf.index
-centersdf = centersdf.rename(columns={0: 'Wt Centroid: Spend in Local',
-                                      1: 'Wt Centroid: Spend in Organic'})
+centersdf = centersdf.rename(
+    columns={0: 'Wt Centroid: Spend in Local',
+             1: 'Wt Centroid: Spend in Organic'})
 df = df.merge(centersdf, on='ClusterID_wt', how='left')
 
 print()
 print(df.head(10))
 print(df.shape)
+print()
+
+"""
+比較
+    観測値の重み付けなしのK-Meansクラスタリング
+"""
+kmeans = KMeans(n_clusters=5, random_state=0, max_iter=1000)
+kmeansclus_nw = kmeans.fit(X)
+predicted_kmeans_nw = kmeans.predict(X)
+
+centers_nw = kmeansclus_nw.cluster_centers_
+
+df['ClusterID_unwt'] = predicted_kmeans_nw
+centersdf_nw = pd.DataFrame(centers_nw)
+centersdf_nw['ClusterID_unwt'] = centersdf_nw.index
+centersdf_nw = centersdf_nw.rename(
+    columns={0: 'Unwt Centroid: Spend in Local',
+             1: 'Unwt Centroid: Spend in Organic'})
+df_nw = df.merge(centersdf_nw, on='ClusterID_unwt', how='left')
+
+print()
+print(df_nw.head(10))
+print(df_nw.shape)
 print()
