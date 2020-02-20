@@ -150,3 +150,32 @@ plt.xlabel('Spend_in_Local', fontsize=15)
 plt.ylabel('Spend_in_Organic', fontsize=15)
 
 plt.show()
+
+"""
+比較
+    プロットを生成して、両方の場合の重心値がどのように見えるかを確認
+"""
+ax1 = df_nw.plot(x="Total_Spend", y="Pct_Spend_in_Local", kind="scatter",
+                 title="Centroid Comparison - Weighted vs Unweighted",
+                 figsize=(10, 6), color='plum', s=2)
+
+df_nw.plot(x="Total_Spend", y="Wt Centroid: Spend in Local",
+           kind="scatter", ax=ax1, color="blue", s=2,
+           label="Wt Centroid: Pct Spend in Local")
+df_nw.plot(x="Total_Spend", y="Unwt Centroid: Spend in Local",
+           kind="scatter", ax=ax1, color="red", s=1,
+           label="Unwt Centroid: Pct Spend in Local")
+
+plt.show()
+
+ax2 = df_nw.plot(x="Total_Spend", y="Pct_Spend_in_Organic", kind="scatter",
+                 title="Centroid Comparison - Weighted vs Unweighted",
+                 figsize=(10, 6), color='plum', s=2)
+df_nw.plot(x="Total_Spend", y="Wt Centroid: Spend in Organic",
+           kind="scatter", ax=ax2, color="red", s=4,
+           label="Wt Centroid: Pct Spend in Organic")
+df_nw.plot(x="Total_Spend", y="Unwt Centroid: Spend in Organic",
+           kind="scatter", ax=ax2, color="orange", s=1,
+           label="Unwt Centroid: Pct Spend in Organic")
+
+plt.show()
