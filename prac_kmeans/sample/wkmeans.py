@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.stats import skewnorm
+from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 
 """
@@ -43,3 +44,16 @@ plt.xlabel('Pct Spend in Local', fontsize=15)
 plt.ylabel('Pct Spend in Organic', fontsize=15)
 
 plt.show()
+
+"""
+STEP3
+    - 最大1000回の反復でKmeans定義する
+    - 入力変数で配列「X」を定義します
+    - 列 'Total_Spend'を観測重みとして配列 'Y'を定義します
+"""
+kmeans = KMeans(n_clusters=5, random_state=0, max_iter=1000)
+X = np.array(df.drop(['Total_Spend'], axis=1).astype(float))
+Y = np.array(df['Total_Spend'].astype(float))
+
+print(X)
+print(Y)
