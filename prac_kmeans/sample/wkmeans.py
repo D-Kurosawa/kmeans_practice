@@ -7,9 +7,15 @@ https://medium.com/@dey.mallika/unsupervised-learning-with-weighted-k-means
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
 from scipy.stats import skewnorm
 from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
+
+from prac_kmeans.mypkg import PandasDisplay
+
+sns.set()  # for plot styling
+PandasDisplay.custom()
 
 """
 STEP1
@@ -24,7 +30,11 @@ df['Total_Spend'] = (skewnorm.rvs(1000, size=5000) * 5000) + 100
 ax = df.reset_index().plot(x='index', y="Total_Spend", kind="hist")
 
 plt.show()
-print(df)
+
+print()
+print(df.head(10))
+print(df.shape)
+print()
 
 """
 STEP2
@@ -84,3 +94,19 @@ centers = wt_kmeansclus.cluster_centers_
 plt.scatter(centers[:, 0], centers[:, 1], c='black', s=500, alpha=0.5)
 
 plt.show()
+
+"""
+STEP6
+    データフレームでクラスターラベルと重心を結合する
+"""
+df['ClusterID_wt'] = predicted_kmeans
+centersdf = pd.DataFrame(centers)
+centersdf['ClusterID_wt'] = centersdf.index
+centersdf = centersdf.rename(columns={0: 'Wt Centroid: Spend in Local',
+                                      1: 'Wt Centroid: Spend in Organic'})
+df = df.merge(centersdf, on='ClusterID_wt', how='left')
+
+print()
+print(df.head(10))
+print(df.shape)
+print()
