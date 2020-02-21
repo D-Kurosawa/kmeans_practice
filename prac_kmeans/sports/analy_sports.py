@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
@@ -47,6 +48,7 @@ class SportsData:
         self._df_std = pd.DataFrame(data=sc.fit_transform(self._df),
                                     index=self._df.index,
                                     columns=self._df.columns)
+        self._df_std.to_csv('std1')
 
     def show(self, detail=False):
         print(f"\n>> {'-' * 30} DataFrame {'-' * 30}")
@@ -89,10 +91,22 @@ class PCAnalysis:
         """
         :type sport: SportsData
         """
-        self._pca = PCA()
-        self._df_pca = pd.DataFrame()
         self._df = sport.df
         self._df_std = sport.df_std
+        self._pca = PCA()
+        self._df_pca = pd.DataFrame()
+
+    @property
+    def df(self):
+        return self._df
+
+    @property
+    def df_std(self):
+        return self._df_std
+
+    @property
+    def df_pca(self):
+        return self._df_pca
 
     def run(self):
         self._pc_analysis()
@@ -103,6 +117,7 @@ class PCAnalysis:
     def _pc_analysis(self):
         self._pca = PCA(svd_solver='full')
         self._df_pca = pd.DataFrame(self._pca.fit_transform(self._df_std))
+        self._df_pca.to_csv('pca')
 
     def _contribution_rate(self):
         """寄与率"""
@@ -159,6 +174,50 @@ class PCAnalysis:
         plt.show()
 
 
+class KmeansAnalysis:
+    def __init__(self, pca):
+        """
+        :type pca: PCAnalysis
+        """
+        self._df = pca.df
+        self._df_std = pca.df_std
+        self._df_pca = pca.df_pca
+
+    def elbow_method(self, df=None):
+        """
+        :type df: pd.DataFrame | None
+        """
+        if df is None:
+            df = self._df_pca
+
+        sse = self._get_sse(df)
+
+        plt.figure(figsize=(10, 5))
+        plt.plot(range(1, 20), sse, marker='o')
+        plt.grid(True)
+        plt.xlabel('Number of clusters')
+        plt.ylabel('SSE')
+        plt.show()
+
+    @staticmethod
+    def _get_sse(df):
+        sse = []
+
+        for n in range(1, 20):
+            # KMeansクラスからkmインスタンスを作成
+            km = KMeans(
+                n_clusters=n,  # クラスターの個数
+                init="k-means++",  # セントロイドの初期値
+                n_init=10,  # 異なるセントロイドの初期値を用いたk-meansの実行回数
+                max_iter=300,  # k-meansアルゴリズムを繰り返す最大回数
+                random_state=0  # 乱数発生初期化
+            )
+            km.fit(df)
+            sse.append(km.inertia_)
+
+        return sse
+
+
 if __name__ == '__main__':
     def _main():
         spt = SportsData()
@@ -167,6 +226,9 @@ if __name__ == '__main__':
 
         pca = PCAnalysis(spt)
         pca.run()
+
+        km = KmeansAnalysis(pca)
+        km.elbow_method()
 
 
     _main()
