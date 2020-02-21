@@ -243,6 +243,14 @@ class KmeansAnalysis:
         plt.grid()
         plt.show()
 
+        self._show_summary(y_km)
+
+    def _show_summary(self, y_km):
+        self._df_std['cluster'] = list(y_km)
+        cls_summary = self._df_std.groupby('cluster').mean()
+
+        print(cls_summary.T.head())
+
 
 if __name__ == '__main__':
     def _main():
