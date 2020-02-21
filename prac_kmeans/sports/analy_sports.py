@@ -84,9 +84,6 @@ class SportsData:
 
 
 class PCAnalysis:
-    """
-    :type _spt: SportsData
-    """
 
     def __init__(self, sport):
         """
@@ -94,16 +91,17 @@ class PCAnalysis:
         """
         self._pca = PCA()
         self._df_pca = pd.DataFrame()
-
-        self._spt = sport
+        self._df = sport.df
+        self._df_std = sport.df_std
 
     def load(self):
         self._pc_analysis()
         self._contribution_rate()
+        self._factor_loading()
 
     def _pc_analysis(self):
         self._pca = PCA(svd_solver='full')
-        self._df_pca = pd.DataFrame(self._pca.fit_transform(self._spt.df_std))
+        self._df_pca = pd.DataFrame(self._pca.fit_transform(self._df_std))
 
     def _contribution_rate(self):
         """寄与率"""
@@ -118,6 +116,20 @@ class PCAnalysis:
         plt.xlabel("components")
         plt.ylabel("cumulative contribution ratio")
         plt.show()
+
+    def _factor_loading(self):
+        """因子負荷量（各主成分に対する相関係数）"""
+        print('--- pc1 ---')
+        print(pd.DataFrame(
+            data={'factor_loading': self._pca.components_[0]},
+            index=self._df.columns
+        ).sort_values(by='factor_loading', ascending=False))
+
+        print('--- pc2 ---')
+        print(pd.DataFrame(
+            data={'factor_loading': self._pca.components_[1]},
+            index=self._df.columns
+        ).sort_values(by='factor_loading', ascending=False))
 
 
 def read_data(show=False):
@@ -152,7 +164,7 @@ def standards(df):
     pca.fit(df_std)
     df_pca = pd.DataFrame(pca.transform(df_std))
 
-    contribution_rate(pca)
+    # contribution_rate(pca)
     factor_loading(pca, df)
     show_biplot(pca, df_pca, df)
 
