@@ -43,8 +43,12 @@ def standards(df):
     pca.fit(df_std)
     df_pca = pd.DataFrame(pca.transform(df_std))
 
-    print(df_pca)
+    contribution_rate(pca)
+    factor_loading(pca, df)
 
+
+def contribution_rate(pca):
+    """寄与率を確認"""
     cumulative_contribution_ratio = np.cumsum(pca.explained_variance_ratio_)
     plt.figure(figsize=(10, 5))
     plt.plot(list(range(1, len(cumulative_contribution_ratio) + 1)),
@@ -54,6 +58,19 @@ def standards(df):
     plt.xlabel("components")
     plt.ylabel("cumulative contribution ratio")
     plt.show()
+
+
+def factor_loading(pca, df):
+    """因子負荷量（各主成分に対する相関係数）"""
+    print('--- pc1 ---')
+    print(pd.DataFrame(
+        data={'factor_loading': pca.components_[0]},
+        index=df.columns).sort_values(by='factor_loading', ascending=False))
+
+    print('--- pc2 ---')
+    print(pd.DataFrame(
+        data={'factor_loading': pca.components_[1]},
+        index=df.columns).sort_values(by='factor_loading', ascending=False))
 
 
 if __name__ == '__main__':
