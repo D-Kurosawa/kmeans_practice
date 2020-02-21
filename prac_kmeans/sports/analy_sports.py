@@ -11,6 +11,48 @@ PandasDisplay.custom()
 sns.set(style='ticks', color_codes=True)
 
 
+class SportsData:
+    def __init__(self, file=None):
+        self._df = pd.DataFrame()
+        self._file = file
+        if file is None:
+            self._file = '../../_data/sports_dataMidSc.txt'
+
+    @property
+    def df(self):
+        return self._df
+
+    def load(self):
+        self._df = pd.read_csv(self._file, sep='\t', index_col='Student')
+
+    def show(self, detail=False):
+        print(f"\n>> {'-' * 30} DataFrame {'-' * 30}")
+        self._dataframe()
+        if not detail:
+            return
+
+        print(f"\n>> {'-' * 30} DataFrame Info {'-' * 30}")
+        self._info()
+
+        print(f"\n>> {'-' * 30} DataFrame Describe {'-' * 30}")
+        self._describe()
+
+        self._pair_plot()
+
+    def _dataframe(self):
+        print(self._df)
+
+    def _info(self):
+        print(self._df.info())
+
+    def _describe(self):
+        print(self._df.describe())
+
+    def _pair_plot(self):
+        sns.pairplot(self._df)
+        plt.show()
+
+
 def read_data(show=False):
     file = '../../_data/sports_dataMidSc.txt'
     df = pd.read_csv(file, sep='\t')
@@ -100,8 +142,9 @@ def show_biplot(pca, df_pca, df):
 
 if __name__ == '__main__':
     def _main():
-        df = read_data()
-        standards(df)
+        spt = SportsData()
+        spt.load()
+        spt.show()
 
 
     _main()
