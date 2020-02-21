@@ -182,15 +182,17 @@ class KmeansAnalysis:
         self._df = pca.df
         self._df_std = pca.df_std
         self._df_pca = pca.df_pca
+        self._df_trg = pd.DataFrame()
 
     def elbow_method(self, df=None):
         """
         :type df: pd.DataFrame | None
         """
+        self._df_trg = df
         if df is None:
-            df = self._df_pca
+            self._df_trg = self._df_pca
 
-        sse = self._get_sse(df)
+        sse = self._get_sse()
 
         plt.figure(figsize=(10, 5))
         plt.plot(range(1, 20), sse, marker='o')
@@ -199,8 +201,7 @@ class KmeansAnalysis:
         plt.ylabel('SSE')
         plt.show()
 
-    @staticmethod
-    def _get_sse(df):
+    def _get_sse(self):
         sse = []
 
         for n in range(1, 20):
@@ -212,10 +213,35 @@ class KmeansAnalysis:
                 max_iter=300,  # k-meansアルゴリズムを繰り返す最大回数
                 random_state=0  # 乱数発生初期化
             )
-            km.fit(df)
+            km.fit(self._df_trg)
             sse.append(km.inertia_)
 
         return sse
+
+        # def aaaa(self):
+        #     km = KMeans(n_clusters=4,  # クラスターの個数
+        #                 init="random",  # セントロイドの初期値をランダムに設定  default:
+        #                 "k-means++"
+        #                 n_init=10,  # 異なるセントロイドの初期値を用いたk-meansの実行回数
+        #                 max_iter=300,  # k-meansアルゴリズムを繰り返す最大回数
+        #                 tol=1e-04,  # 収束と判定するための相対的な許容誤差
+        #                 random_state=0)  # 乱数発生初期化
+        #
+        #     # fit_predictメソッドによりクラスタリングを行う
+        #     y_km = km.fit_predict(df_pca)
+        #
+        #     plt.figure(figsize=(8, 8))
+        #     # クラスター番号に応じてデータをプロット
+        #     plt.scatter(df_pca.iloc[:, 0], df_pca.iloc[:, 1], c=y_km,
+        #                 cmap='viridis')
+
+        # 重心をプロット
+        plt.scatter(km.cluster_centers_[:, 0], km.cluster_centers_[
+                                               :, 1], s=250, marker="x", c="r",
+                    label="centroids")
+
+        plt.grid()
+        plt.show()
 
 
 if __name__ == '__main__':
