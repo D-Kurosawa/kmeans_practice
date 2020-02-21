@@ -12,7 +12,15 @@ sns.set(style='ticks', color_codes=True)
 
 
 class SportsData:
+    """
+    :type _df: pd.DataFrame
+    :type _df_std: pd.DataFrame
+    """
+
     def __init__(self, file=None):
+        """
+        :type file: str | None
+        """
         self._df = pd.DataFrame()
         self._df_std = pd.DataFrame()
         self._file = file
@@ -75,6 +83,43 @@ class SportsData:
         plt.show()
 
 
+class PCAnalysis:
+    """
+    :type _spt: SportsData
+    """
+
+    def __init__(self, sport):
+        """
+        :type sport: SportsData
+        """
+        self._pca = PCA()
+        self._df_pca = pd.DataFrame()
+
+        self._spt = sport
+
+    def load(self):
+        self._pc_analysis()
+        self._contribution_rate()
+
+    def _pc_analysis(self):
+        self._pca = PCA(svd_solver='full')
+        self._df_pca = pd.DataFrame(self._pca.fit_transform(self._spt.df_std))
+
+    def _contribution_rate(self):
+        """寄与率"""
+        cumulative_contribution_ratio = np.cumsum(
+            self._pca.explained_variance_ratio_)
+
+        plt.figure(figsize=(10, 5))
+        plt.plot(list(range(1, len(cumulative_contribution_ratio) + 1)),
+                 cumulative_contribution_ratio, "-o")
+        plt.ylim(0, 1)
+        plt.grid(True)
+        plt.xlabel("components")
+        plt.ylabel("cumulative contribution ratio")
+        plt.show()
+
+
 def read_data(show=False):
     file = '../../_data/sports_dataMidSc.txt'
     df = pd.read_csv(file, sep='\t')
@@ -112,17 +157,17 @@ def standards(df):
     show_biplot(pca, df_pca, df)
 
 
-def contribution_rate(pca):
-    """寄与率"""
-    cumulative_contribution_ratio = np.cumsum(pca.explained_variance_ratio_)
-    plt.figure(figsize=(10, 5))
-    plt.plot(list(range(1, len(cumulative_contribution_ratio) + 1)),
-             cumulative_contribution_ratio, "-o")
-    plt.ylim(0, 1)
-    plt.grid(True)
-    plt.xlabel("components")
-    plt.ylabel("cumulative contribution ratio")
-    plt.show()
+# def contribution_rate(pca):
+#     """寄与率"""
+#     cumulative_contribution_ratio = np.cumsum(pca.explained_variance_ratio_)
+#     plt.figure(figsize=(10, 5))
+#     plt.plot(list(range(1, len(cumulative_contribution_ratio) + 1)),
+#              cumulative_contribution_ratio, "-o")
+#     plt.ylim(0, 1)
+#     plt.grid(True)
+#     plt.xlabel("components")
+#     plt.ylabel("cumulative contribution ratio")
+#     plt.show()
 
 
 def factor_loading(pca, df):
@@ -167,6 +212,9 @@ if __name__ == '__main__':
         spt = SportsData()
         spt.load()
         spt.show()
+
+        pca = PCAnalysis(spt)
+        pca.load()
 
 
     _main()
