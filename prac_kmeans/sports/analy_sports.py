@@ -14,6 +14,7 @@ sns.set(style='ticks', color_codes=True)
 class SportsData:
     def __init__(self, file=None):
         self._df = pd.DataFrame()
+        self._df_std = pd.DataFrame()
         self._file = file
         if file is None:
             self._file = '../../_data/sports_dataMidSc.txt'
@@ -22,12 +23,30 @@ class SportsData:
     def df(self):
         return self._df
 
+    @property
+    def df_std(self):
+        return self._df_std
+
     def load(self):
+        self._load_dataframe()
+        self._to_standard()
+
+    def _load_dataframe(self):
         self._df = pd.read_csv(self._file, sep='\t', index_col='Student')
+
+    def _to_standard(self):
+        sc = StandardScaler()
+        self._df_std = pd.DataFrame(data=sc.fit_transform(self._df),
+                                    index=self._df.index,
+                                    columns=self._df.columns)
 
     def show(self, detail=False):
         print(f"\n>> {'-' * 30} DataFrame {'-' * 30}")
         self._dataframe()
+
+        print(f"\n>> {'-' * 30} Standard DataFrame {'-' * 30}")
+        self._std_dataframe()
+
         if not detail:
             return
 
@@ -41,6 +60,9 @@ class SportsData:
 
     def _dataframe(self):
         print(self._df)
+
+    def _std_dataframe(self):
+        print(self._df_std)
 
     def _info(self):
         print(self._df.info())
