@@ -208,7 +208,7 @@ class KmeansAnalysis:
             # KMeansクラスからkmインスタンスを作成
             km = KMeans(
                 n_clusters=n,  # クラスターの個数
-                init="k-means++",  # セントロイドの初期値
+                init='k-means++',  # セントロイドの初期値
                 n_init=10,  # 異なるセントロイドの初期値を用いたk-meansの実行回数
                 max_iter=300,  # k-meansアルゴリズムを繰り返す最大回数
                 random_state=0  # 乱数発生初期化
@@ -218,27 +218,27 @@ class KmeansAnalysis:
 
         return sse
 
-        # def aaaa(self):
-        #     km = KMeans(n_clusters=4,  # クラスターの個数
-        #                 init="random",  # セントロイドの初期値をランダムに設定  default:
-        #                 "k-means++"
-        #                 n_init=10,  # 異なるセントロイドの初期値を用いたk-meansの実行回数
-        #                 max_iter=300,  # k-meansアルゴリズムを繰り返す最大回数
-        #                 tol=1e-04,  # 収束と判定するための相対的な許容誤差
-        #                 random_state=0)  # 乱数発生初期化
-        #
-        #     # fit_predictメソッドによりクラスタリングを行う
-        #     y_km = km.fit_predict(df_pca)
-        #
-        #     plt.figure(figsize=(8, 8))
-        #     # クラスター番号に応じてデータをプロット
-        #     plt.scatter(df_pca.iloc[:, 0], df_pca.iloc[:, 1], c=y_km,
-        #                 cmap='viridis')
+    def clustering(self, n_clusters=4):
+        km = KMeans(
+            n_clusters=n_clusters,  # クラスターの個数
+            init='k-means++',  # セントロイドの初期値
+            n_init=10,  # 異なるセントロイドの初期値を用いたk-meansの実行回数
+            max_iter=300,  # k-meansアルゴリズムを繰り返す最大回数
+            random_state=0  # 乱数発生初期化
+        )
+
+        # fit_predictメソッドによりクラスタリングを行う
+        y_km = km.fit_predict(self._df_trg)
+
+        plt.figure(figsize=(8, 8))
+        # クラスター番号に応じてデータをプロット
+        plt.scatter(self._df_trg.iloc[:, 0], self._df_trg.iloc[:, 1], c=y_km,
+                    cmap='viridis')
 
         # 重心をプロット
-        plt.scatter(km.cluster_centers_[:, 0], km.cluster_centers_[
-                                               :, 1], s=250, marker="x", c="r",
-                    label="centroids")
+        plt.scatter(km.cluster_centers_[:, 0],
+                    km.cluster_centers_[:, 1],
+                    s=250, marker="x", c="r", label="centroids")
 
         plt.grid()
         plt.show()
@@ -255,6 +255,7 @@ if __name__ == '__main__':
 
         km = KmeansAnalysis(pca)
         km.elbow_method()
+        km.clustering()
 
 
     _main()
