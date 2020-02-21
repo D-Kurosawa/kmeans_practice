@@ -251,6 +251,28 @@ class KmeansAnalysis:
 
         print(cls_summary.T.head())
 
+        self._show_cluster(cls_summary)
+
+    @staticmethod
+    def _show_cluster(cls_summary):
+        # 可視化
+        plt.figure(figsize=(20, 10))
+
+        x = list(range(len(cls_summary.columns)))
+        for i in range(len(cls_summary)):
+            y = cls_summary.T.iloc[:, i]
+            plt.plot(x, y, marker="o")
+
+        # グラフのx軸に目盛りを設定
+        labels = cls_summary.columns
+        plt.xticks(x, labels)
+
+        plt.xlabel('imtes')
+        plt.ylabel('standard deviation')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
 
 if __name__ == '__main__':
     def _main():
