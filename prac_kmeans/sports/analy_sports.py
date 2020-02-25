@@ -179,10 +179,10 @@ class KmeansAnalysis:
         """
         :type pca: PCAnalysis
         """
-        self._df = pca.df
         self._df_std = pca.df_std
         self._df_pca = pca.df_pca
         self._df_trg = pd.DataFrame()
+        self._org_data = OriginData(pca.df)
 
     def elbow_method(self, df=None):
         """
@@ -229,6 +229,7 @@ class KmeansAnalysis:
 
         # fit_predictメソッドによりクラスタリングを行う
         y_km = km.fit_predict(self._df_trg)
+        self._org_data.set_clst(y_km)
 
         plt.figure(figsize=(8, 8))
         # クラスター番号に応じてデータをプロット
@@ -244,6 +245,7 @@ class KmeansAnalysis:
         plt.show()
 
         self._show_summary(y_km)
+        self._show_mean()
 
     def _show_summary(self, y_km):
         self._df_std['cluster'] = list(y_km)
@@ -272,6 +274,23 @@ class KmeansAnalysis:
         plt.legend()
         plt.grid(True)
         plt.show()
+
+    def _show_mean(self):
+        self._org_data.show_mean()
+
+
+class OriginData:
+    def __init__(self, df):
+        self._df = df
+        self._clst = None
+
+    def set_clst(self, clst):
+        self._clst = clst
+
+    def show_mean(self):
+        #  単位をもとに戻して平均値を算出
+        self._df['cluster'] = list(self._clst)
+        print(self._df.groupby('cluster').mean().T)
 
 
 if __name__ == '__main__':
