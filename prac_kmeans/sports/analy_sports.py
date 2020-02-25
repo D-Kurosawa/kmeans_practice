@@ -261,13 +261,13 @@ class KmeansAnalysis:
         x = list(range(len(cls_summary.columns)))
         for i in range(len(cls_summary)):
             y = cls_summary.T.iloc[:, i]
-            plt.plot(x, y, marker="o")
+            plt.plot(x, y, marker="o", label=i)
 
         # グラフのx軸に目盛りを設定
         labels = cls_summary.columns
         plt.xticks(x, labels)
 
-        plt.xlabel('imtes')
+        plt.xlabel('items')
         plt.ylabel('standard deviation')
         plt.legend()
         plt.grid(True)
