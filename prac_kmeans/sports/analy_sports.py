@@ -182,7 +182,7 @@ class KmeansAnalysis:
         self._df_std = pca.df_std
         self._df_pca = pca.df_pca
         self._df_trg = pd.DataFrame()
-        self._org_data = OriginData(pca.df)
+        self._org_data = ToOrigin(pca.df)
 
     def elbow_method(self, df=None):
         """
@@ -279,18 +279,39 @@ class KmeansAnalysis:
         self._org_data.show_mean()
 
 
-class OriginData:
+class ToOrigin:
+    """
+    :type _df: pd.DataFrame
+    :type _clst: np.ndarray | None
+    """
+
     def __init__(self, df):
+        """
+        :type df: pd.DataFrame
+        """
         self._df = df
         self._clst = None
 
     def set_clst(self, clst):
+        """
+        :type clst: np.ndarray
+        """
         self._clst = clst
 
     def show_mean(self):
         #  単位をもとに戻して平均値を算出
         self._df['cluster'] = list(self._clst)
-        print(self._df.groupby('cluster').mean().T)
+        df = self._df.groupby('cluster').mean().T
+
+        cluster = sorted([c for c in set(self._clst)])
+        elements = pd.Series(index=cluster, dtype=np.float64)
+
+        for c in cluster:
+            elements[c] = np.count_nonzero(self._clst == c)
+
+        df.loc['elements'] = elements
+
+        print(df)
 
 
 if __name__ == '__main__':
