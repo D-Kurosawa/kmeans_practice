@@ -36,9 +36,10 @@ class SportsData:
     def df_std(self):
         return self._df_std
 
-    def load(self):
+    def load(self, save=False):
         self._load_dataframe()
         self._to_standard()
+        self._save_dataframe(save)
 
     def _load_dataframe(self):
         self._df = pd.read_csv(self._file, sep='\t', index_col='Student')
@@ -48,7 +49,10 @@ class SportsData:
         self._df_std = pd.DataFrame(data=sc.fit_transform(self._df),
                                     index=self._df.index,
                                     columns=self._df.columns)
-        self._df_std.to_csv('std1')
+
+    def _save_dataframe(self, save):
+        if save:
+            self._df_std.to_csv('std1')
 
     def show(self, detail=False):
         print(f"\n>> {'-' * 30} DataFrame {'-' * 30}")
@@ -108,16 +112,20 @@ class PCAnalysis:
     def df_pca(self):
         return self._df_pca
 
-    def run(self):
+    def run(self, save=False):
         self._pc_analysis()
         self._contribution_rate()
         self._factor_loading()
         self._factor_score()
+        self._save_dataframe(save)
 
     def _pc_analysis(self):
         self._pca = PCA(svd_solver='full')
         self._df_pca = pd.DataFrame(self._pca.fit_transform(self._df_std))
-        self._df_pca.to_csv('pca')
+
+    def _save_dataframe(self, save):
+        if save:
+            self._df_pca.to_csv('pca')
 
     def _contribution_rate(self):
         """寄与率"""
@@ -311,6 +319,7 @@ class ToOrigin:
 
         df.loc['elements'] = elements
 
+        print()
         print(df)
 
 
